@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Group;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Validator;
 
 class GroupController extends Controller
@@ -14,20 +15,50 @@ class GroupController extends Controller
      *  Function to send json request
      */
 
+    public function test(){
+        $groups =  Group::all();
+
+        if (!$groups) {
+            return $this->sendMessage(404, 'Groups not found');
+        }
+
+        $result = [];
+        foreach ($groups as $group){
+            $result[$group->id]['name'] = $group->name;
+            $members =  $group->getMembers();
+            if(is_array($members)){
+                $result[$group->id]['members'] = $members;
+            }
+
+        }
+        return  response()->json($result , 200);
+    }
+
+
+
     public function sendMessage($code ,$message){
         return  response()->json(["code"=> $code , "message" => $message ], $code);
     }
 
     /*
      * Return group list
+     * add members 
      */
 
     public function index(){
         $groups =  Group::all();
-
         if (!$groups) {
             return $this->sendMessage(404, 'Groups not found');
         }
+        
+        foreach ($groups as $group){
+            
+        if($group->getMembers() != null){
+            dd($group);
+        }    
+            
+        }
+        
         return  response()->json($groups , 200);
 
     }
@@ -98,5 +129,5 @@ class GroupController extends Controller
         }
         return $this->sendMessage(400,'Invalid data' );
     }
-    
+
 }
