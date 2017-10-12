@@ -15,6 +15,17 @@ class GroupController extends Controller
      *  Function to send json request
      */
 
+
+    public function sendMessage($code ,$message){
+        return  response()->json(["code"=> $code , "message" => $message ], $code);
+    }
+
+
+    /*
+     *  method to show group members
+     */
+
+
     public function test(){
         $groups =  Group::all();
 
@@ -34,11 +45,6 @@ class GroupController extends Controller
         return  response()->json($result , 200);
     }
 
-
-
-    public function sendMessage($code ,$message){
-        return  response()->json(["code"=> $code , "message" => $message ], $code);
-    }
 
     /*
      * Return group list
